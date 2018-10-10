@@ -1,22 +1,21 @@
-using System;
-using System.Linq;
-using System.ComponentModel;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
-using System.Collections.ObjectModel;
-using PersonalOrganizer.Common.Utils;
 using PersonalOrganizer.Common.DataModel;
+using System;
+using System.Linq;
 
-namespace PersonalOrganizer.Common.ViewModel {
+namespace PersonalOrganizer.Common.ViewModel
+{
     public class LookUpEntitiesViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork> : EntitiesViewModel<TEntity, TProjection, TUnitOfWork>, IDocumentContent
         where TEntity : class
         where TProjection : class
-        where TUnitOfWork : IUnitOfWork {
-
+        where TUnitOfWork : IUnitOfWork
+    {
         public static LookUpEntitiesViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork> Create(
             IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory,
             Func<TUnitOfWork, IReadOnlyRepository<TEntity>> getRepositoryFunc,
-            Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>> projection = null) {
+            Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>> projection = null)
+        {
             return ViewModelSource.Create(() => new LookUpEntitiesViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork>(unitOfWorkFactory, getRepositoryFunc, projection));
         }
 
@@ -24,10 +23,12 @@ namespace PersonalOrganizer.Common.ViewModel {
             IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory,
             Func<TUnitOfWork, IReadOnlyRepository<TEntity>> getRepositoryFunc,
             Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>> projection
-            ) : base(unitOfWorkFactory, getRepositoryFunc, projection) {
+            ) : base(unitOfWorkFactory, getRepositoryFunc, projection)
+        {
         }
 
-        protected override IEntitiesChangeTracker CreateEntitiesChangeTracker() {
+        protected override IEntitiesChangeTracker CreateEntitiesChangeTracker()
+        {
             return new EntitiesChangeTracker<TPrimaryKey>(this);
         }
     }

@@ -127,9 +127,9 @@ namespace PersonalOrganizer.Common.Utils
         /// <param name="hasPrimaryKeyFunction">A function that determines whether given the entity has a primary key assigned.</param>
         public EntityTraits(Func<TEntity, TPrimaryKey> getPrimaryKeyFunction, Action<TEntity, TPrimaryKey> setPrimaryKeyAction, Func<TEntity, bool> hasPrimaryKeyFunction)
         {
-            this.GetPrimaryKey = getPrimaryKeyFunction;
-            this.SetPrimaryKey = setPrimaryKeyAction;
-            this.HasPrimaryKey = hasPrimaryKeyFunction;
+            GetPrimaryKey = getPrimaryKeyFunction;
+            SetPrimaryKey = setPrimaryKeyAction;
+            HasPrimaryKey = hasPrimaryKeyFunction;
         }
 
         /// <summary>

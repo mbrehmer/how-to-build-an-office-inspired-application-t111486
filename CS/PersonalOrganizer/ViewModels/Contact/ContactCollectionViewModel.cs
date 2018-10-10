@@ -1,23 +1,22 @@
-using System;
-using System.Linq;
 using DevExpress.Mvvm.POCO;
-using PersonalOrganizer.Common.Utils;
-using PersonalOrganizer.ContactContextDataModel;
 using PersonalOrganizer.Common.DataModel;
-using PersonalOrganizer.Model;
 using PersonalOrganizer.Common.ViewModel;
+using PersonalOrganizer.ContactContextDataModel;
+using PersonalOrganizer.Model;
 
-namespace PersonalOrganizer.ViewModels {
+namespace PersonalOrganizer.ViewModels
+{
     /// <summary>
     /// Represents the Contacts collection view model.
     /// </summary>
-    public partial class ContactCollectionViewModel : CollectionViewModel<Contact, int, IContactContextUnitOfWork> {
-
+    public partial class ContactCollectionViewModel : CollectionViewModel<Contact, int, IContactContextUnitOfWork>
+    {
         /// <summary>
         /// Creates a new instance of ContactCollectionViewModel as a POCO view model.
         /// </summary>
         /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
-        public static ContactCollectionViewModel Create(IUnitOfWorkFactory<IContactContextUnitOfWork> unitOfWorkFactory = null) {
+        public static ContactCollectionViewModel Create(IUnitOfWorkFactory<IContactContextUnitOfWork> unitOfWorkFactory = null)
+        {
             return ViewModelSource.Create(() => new ContactCollectionViewModel(unitOfWorkFactory));
         }
 
@@ -27,7 +26,8 @@ namespace PersonalOrganizer.ViewModels {
         /// </summary>
         /// <param name="unitOfWorkFactory">A factory used to create a unit of work instance.</param>
         protected ContactCollectionViewModel(IUnitOfWorkFactory<IContactContextUnitOfWork> unitOfWorkFactory = null)
-            : base(unitOfWorkFactory ?? UnitOfWorkSource.GetUnitOfWorkFactory(), x => x.Contacts) {
+            : base(unitOfWorkFactory ?? UnitOfWorkSource.GetUnitOfWorkFactory(), x => x.Contacts)
+        {
         }
     }
 }

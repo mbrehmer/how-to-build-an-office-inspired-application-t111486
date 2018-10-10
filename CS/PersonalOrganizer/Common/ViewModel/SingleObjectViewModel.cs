@@ -1,14 +1,14 @@
+using DevExpress.Mvvm;
+using DevExpress.Mvvm.DataAnnotations;
+using DevExpress.Mvvm.POCO;
+using PersonalOrganizer.Common.DataModel;
+using PersonalOrganizer.Common.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using DevExpress.Mvvm;
-using DevExpress.Mvvm.POCO;
-using DevExpress.Mvvm.DataAnnotations;
-using PersonalOrganizer.Common.Utils;
-using PersonalOrganizer.Common.DataModel;
 
 namespace PersonalOrganizer.Common.ViewModel
 {
@@ -67,7 +67,7 @@ namespace PersonalOrganizer.Common.ViewModel
             this.getEntityDisplayNameFunc = getEntityDisplayNameFunc;
             UnitOfWork = UnitOfWorkFactory.CreateUnitOfWork();
             if (this.IsInDesignMode())
-                this.Entity = this.Repository.FirstOrDefault();
+                Entity = Repository.FirstOrDefault();
             else
                 OnInitializeInRuntime();
         }
@@ -322,7 +322,7 @@ namespace PersonalOrganizer.Common.ViewModel
         {
             var entity = CreateEntity();
             entityInitializer?.Invoke(entity);
-            this.Entity = entity;
+            Entity = entity;
         }
 
         protected void Reload(bool createNew = false)

@@ -1,12 +1,12 @@
 using System;
-using System.Linq;
 
-namespace PersonalOrganizer.Common.DataModel {
+namespace PersonalOrganizer.Common.DataModel
+{
     /// <summary>
     /// The database-independent exception used in Data Layer and View Model Layer to handle database errors.
     /// </summary>
-    public class DbException : Exception {
-
+    public class DbException : Exception
+    {
         /// <summary>
         /// Initializes a new instance of the DbRepository class.
         /// </summary>
@@ -14,7 +14,8 @@ namespace PersonalOrganizer.Common.DataModel {
         /// <param name="errorCaption">An error message caption text.</param>
         /// <param name="innerException">An underlying exception.</param>
         public DbException(string errorMessage, string errorCaption, Exception innerException)
-            : base(innerException.Message, innerException) {
+            : base(innerException.Message, innerException)
+        {
             ErrorMessage = errorMessage;
             ErrorCaption = errorCaption;
         }

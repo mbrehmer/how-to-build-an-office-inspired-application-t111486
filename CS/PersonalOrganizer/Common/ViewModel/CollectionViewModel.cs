@@ -1,14 +1,10 @@
+using DevExpress.Mvvm;
+using DevExpress.Mvvm.POCO;
+using PersonalOrganizer.Common.DataModel;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using DevExpress.Mvvm;
-using DevExpress.Mvvm.POCO;
-using DevExpress.Mvvm.DataAnnotations;
-using PersonalOrganizer.Common.Utils;
-using PersonalOrganizer.Common.DataModel;
 
 namespace PersonalOrganizer.Common.ViewModel
 {
@@ -90,7 +86,9 @@ namespace PersonalOrganizer.Common.ViewModel
     {
         private EntitiesChangeTracker<TPrimaryKey> ChangeTrackerWithKey
         { get { return (EntitiesChangeTracker<TPrimaryKey>)ChangeTracker; } }
+
         private readonly Action<TEntity> newEntityInitializer;
+
         private IRepository<TEntity, TPrimaryKey> Repository
         { get { return (IRepository<TEntity, TPrimaryKey>)ReadOnlyRepository; } }
 

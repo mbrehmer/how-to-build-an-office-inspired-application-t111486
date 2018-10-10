@@ -10,7 +10,7 @@ namespace PersonalOrganizer
         protected override void OnStartup(StartupEventArgs e)
         {
             ApplicationThemeHelper.ApplicationThemeName = Theme.Office2013.Name;
-            Database.SetInitializer<ContactContext>(new ContactContextInitializer());
+            Database.SetInitializer(new ContactContextInitializer());
             base.OnStartup(e);
         }
     }

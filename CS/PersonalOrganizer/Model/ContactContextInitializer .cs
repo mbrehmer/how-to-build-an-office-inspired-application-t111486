@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 
-namespace PersonalOrganizer.Model {
-    public class ContactContextInitializer : DropCreateDatabaseAlways<ContactContext> { //DropCreateDatabaseIfModelChanges<ContactContext> {
-        protected override void Seed(ContactContext context) {
+namespace PersonalOrganizer.Model
+{
+    public class ContactContextInitializer : DropCreateDatabaseAlways<ContactContext>
+    { //DropCreateDatabaseIfModelChanges<ContactContext> {
+        protected override void Seed(ContactContext context)
+        {
             base.Seed(context);
             List<Contact> contacts = new List<Contact>() {
                 new Contact("Carolyn", "Baker") {
@@ -53,16 +56,21 @@ namespace PersonalOrganizer.Model {
             contacts.ForEach(x => context.Contacts.Add(x));
             context.SaveChanges();
         }
-        void InitializePhotos(IList<Contact> contacts) {
-            foreach(Contact contact in contacts)
+
+        private void InitializePhotos(IList<Contact> contacts)
+        {
+            foreach (Contact contact in contacts)
                 contact.Photo = GetPhoto(contact);
         }
-        byte[] GetPhoto(Contact contact) {
+
+        private byte[] GetPhoto(Contact contact)
+        {
             string name = string.Format("{0}{1}.jpg", contact.FirstName, contact.LastName);
             string path = "pack://application:,,,/Model/Photos/" + name;
             Stream resourceStream = App.GetResourceStream(new Uri(path)).Stream;
             byte[] res;
-            using(BinaryReader reader = new BinaryReader(resourceStream)) {
+            using (BinaryReader reader = new BinaryReader(resourceStream))
+            {
                 res = reader.ReadBytes((int)resourceStream.Length);
             }
             return res;
