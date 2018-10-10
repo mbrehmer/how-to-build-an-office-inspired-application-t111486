@@ -10,17 +10,19 @@ using DevExpress.Mvvm.DataAnnotations;
 using PersonalOrganizer.Common.Utils;
 using PersonalOrganizer.Common.DataModel;
 
-namespace PersonalOrganizer.Common.ViewModel {
+namespace PersonalOrganizer.Common.ViewModel
+{
     public partial class CollectionViewModel<TEntity, TPrimaryKey, TUnitOfWork> : CollectionViewModel<TEntity, TEntity, TPrimaryKey, TUnitOfWork>
         where TEntity : class
-        where TUnitOfWork : IUnitOfWork {
-
+        where TUnitOfWork : IUnitOfWork
+    {
         public static CollectionViewModel<TEntity, TPrimaryKey, TUnitOfWork> CreateCollectionViewModel(
             IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory,
             Func<TUnitOfWork, IRepository<TEntity, TPrimaryKey>> getRepositoryFunc,
             Func<IRepositoryQuery<TEntity>, IQueryable<TEntity>> projection = null,
             Action<TEntity> newEntityInitializer = null,
-            bool ignoreSelectEntityMessage = false) {
+            bool ignoreSelectEntityMessage = false)
+        {
             return ViewModelSource.Create(() => new CollectionViewModel<TEntity, TPrimaryKey, TUnitOfWork>(unitOfWorkFactory, getRepositoryFunc, projection, newEntityInitializer, ignoreSelectEntityMessage));
         }
 
@@ -30,12 +32,13 @@ namespace PersonalOrganizer.Common.ViewModel {
             Func<IRepositoryQuery<TEntity>, IQueryable<TEntity>> projection = null,
             Action<TEntity> newEntityInitializer = null,
             bool ignoreSelectEntityMessage = false
-            ) : base(unitOfWorkFactory, getRepositoryFunc, projection, newEntityInitializer, ignoreSelectEntityMessage) {
+            ) : base(unitOfWorkFactory, getRepositoryFunc, projection, newEntityInitializer, ignoreSelectEntityMessage)
+        {
         }
     }
 
     /// <summary>
-    /// The base class for a POCO view models exposing a collection of entities of a given type and CRUD operations against these entities. 
+    /// The base class for a POCO view models exposing a collection of entities of a given type and CRUD operations against these entities.
     /// This is a partial class that provides extension point to add custom properties, commands and override methods without modifying the auto-generated code.
     /// </summary>
     /// <typeparam name="TEntity">An entity type.</typeparam>
@@ -44,14 +47,15 @@ namespace PersonalOrganizer.Common.ViewModel {
     public partial class CollectionViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork> : CollectionViewModelBase<TEntity, TProjection, TPrimaryKey, TUnitOfWork>
         where TEntity : class
         where TProjection : class
-        where TUnitOfWork : IUnitOfWork {
-
+        where TUnitOfWork : IUnitOfWork
+    {
         public static CollectionViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork> CreateProjectionCollectionViewModel(
             IUnitOfWorkFactory<TUnitOfWork> unitOfWorkFactory,
             Func<TUnitOfWork, IRepository<TEntity, TPrimaryKey>> getRepositoryFunc,
             Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>> projection,
             Action<TEntity> newEntityInitializer = null,
-            bool ignoreSelectEntityMessage = false) {
+            bool ignoreSelectEntityMessage = false)
+        {
             return ViewModelSource.Create(() => new CollectionViewModel<TEntity, TProjection, TPrimaryKey, TUnitOfWork>(unitOfWorkFactory, getRepositoryFunc, projection, newEntityInitializer, ignoreSelectEntityMessage));
         }
 
@@ -67,7 +71,8 @@ namespace PersonalOrganizer.Common.ViewModel {
             Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>> projection,
             Action<TEntity> newEntityInitializer = null,
             bool ignoreSelectEntityMessage = false
-            ) : base(unitOfWorkFactory, getRepositoryFunc, projection, newEntityInitializer, ignoreSelectEntityMessage) {
+            ) : base(unitOfWorkFactory, getRepositoryFunc, projection, newEntityInitializer, ignoreSelectEntityMessage)
+        {
         }
     }
 
@@ -81,11 +86,13 @@ namespace PersonalOrganizer.Common.ViewModel {
     public abstract class CollectionViewModelBase<TEntity, TProjection, TPrimaryKey, TUnitOfWork> : ReadOnlyCollectionViewModel<TEntity, TProjection, TUnitOfWork>
         where TEntity : class
         where TProjection : class
-        where TUnitOfWork : IUnitOfWork {
-
-        EntitiesChangeTracker<TPrimaryKey> ChangeTrackerWithKey { get { return (EntitiesChangeTracker<TPrimaryKey>)ChangeTracker; } }
-        readonly Action<TEntity> newEntityInitializer;
-        IRepository<TEntity, TPrimaryKey> Repository { get { return (IRepository<TEntity, TPrimaryKey>)ReadOnlyRepository; } }
+        where TUnitOfWork : IUnitOfWork
+    {
+        private EntitiesChangeTracker<TPrimaryKey> ChangeTrackerWithKey
+        { get { return (EntitiesChangeTracker<TPrimaryKey>)ChangeTracker; } }
+        private readonly Action<TEntity> newEntityInitializer;
+        private IRepository<TEntity, TPrimaryKey> Repository
+        { get { return (IRepository<TEntity, TPrimaryKey>)ReadOnlyRepository; } }
 
         /// <summary>
         /// Initializes a new instance of the CollectionViewModelBase class.
@@ -99,11 +106,12 @@ namespace PersonalOrganizer.Common.ViewModel {
             Func<IRepositoryQuery<TEntity>, IQueryable<TProjection>> projection,
             Action<TEntity> newEntityInitializer,
             bool ignoreSelectEntityMessage
-            ) : base(unitOfWorkFactory, getRepositoryFunc, projection) {
+            ) : base(unitOfWorkFactory, getRepositoryFunc, projection)
+        {
             VerifyProjectionType();
             this.newEntityInitializer = newEntityInitializer;
             this.ignoreSelectEntityMessage = ignoreSelectEntityMessage;
-            if(!this.IsInDesignMode())
+            if (!this.IsInDesignMode())
                 RegisterSelectEntityMessage();
         }
 
@@ -115,7 +123,8 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// Creates and shows a document containing a single object view model for new entity.
         /// Since CollectionViewModelBase is a POCO view model, an instance of this class will also expose the NewCommand property that can be used as a binding source in views.
         /// </summary>
-        public virtual void New() {
+        public virtual void New()
+        {
             GetDocumentManagerService().ShowNewEntityDocument(this, newEntityInitializer);
         }
 
@@ -124,19 +133,22 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// Since CollectionViewModelBase is a POCO view model, an instance of this class will also expose the EditCommand property that can be used as a binding source in views.
         /// </summary>
         /// <param name="projectionEntity">Entity to edit.</param>
-        public virtual void Edit(TProjection projectionEntity) {
-            if(Repository.IsDetached(projectionEntity))
+        public virtual void Edit(TProjection projectionEntity)
+        {
+            if (Repository.IsDetached(projectionEntity))
                 return;
             TPrimaryKey primaryKey = Repository.GetProjectionPrimaryKey(projectionEntity);
             int index = Entities.IndexOf(projectionEntity);
             projectionEntity = ChangeTrackerWithKey.FindActualProjectionByKey(primaryKey);
-            if(index >= 0) {
-                if(projectionEntity == null)
+            if (index >= 0)
+            {
+                if (projectionEntity == null)
                     Entities.RemoveAt(index);
                 else
                     Entities[index] = projectionEntity;
             }
-            if(projectionEntity == null) {
+            if (projectionEntity == null)
+            {
                 DestroyDocument(GetDocumentManagerService().FindEntityDocument<TEntity, TPrimaryKey>(primaryKey));
                 return;
             }
@@ -148,7 +160,8 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// Since CollectionViewModelBase is a POCO view model, this method will be used as a CanExecute callback for EditCommand.
         /// </summary>
         /// <param name="projectionEntity">An entity to edit.</param>
-        public bool CanEdit(TProjection projectionEntity) {
+        public bool CanEdit(TProjection projectionEntity)
+        {
             return projectionEntity != null && !IsLoading;
         }
 
@@ -157,20 +170,25 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// Since CollectionViewModelBase is a POCO view model, an instance of this class will also expose the DeleteCommand property that can be used as a binding source in views.
         /// </summary>
         /// <param name="projectionEntity">An entity to edit.</param>
-        public virtual void Delete(TProjection projectionEntity) {
-            if(MessageBoxService.ShowMessage(string.Format(CommonResources.Confirmation_Delete, typeof(TEntity).Name), CommonResources.Confirmation_Caption, MessageButton.YesNo) != MessageResult.Yes)
+        public virtual void Delete(TProjection projectionEntity)
+        {
+            if (MessageBoxService.ShowMessage(string.Format(CommonResources.Confirmation_Delete, typeof(TEntity).Name), CommonResources.Confirmation_Caption, MessageButton.YesNo) != MessageResult.Yes)
                 return;
-            try {
+            try
+            {
                 Entities.Remove(projectionEntity);
                 TPrimaryKey primaryKey = Repository.GetProjectionPrimaryKey(projectionEntity);
                 TEntity entity = Repository.Find(primaryKey);
-                if(entity != null) {
+                if (entity != null)
+                {
                     OnBeforeEntityDeleted(primaryKey, entity);
                     Repository.Remove(entity);
                     Repository.UnitOfWork.SaveChanges();
                     OnEntityDeleted(primaryKey, entity);
                 }
-            } catch (DbException e) {
+            }
+            catch (DbException e)
+            {
                 Refresh();
                 MessageBoxService.ShowMessage(e.ErrorMessage, e.ErrorCaption, MessageButton.OK, MessageIcon.Error);
             }
@@ -178,7 +196,8 @@ namespace PersonalOrganizer.Common.ViewModel {
 
         protected virtual void OnBeforeEntityDeleted(TPrimaryKey primaryKey, TEntity entity) { }
 
-        protected virtual void OnEntityDeleted(TPrimaryKey primaryKey, TEntity entity) {
+        protected virtual void OnEntityDeleted(TPrimaryKey primaryKey, TEntity entity)
+        {
             Messenger.Default.Send(new EntityMessage<TEntity, TPrimaryKey>(primaryKey, EntityMessageType.Deleted));
         }
 
@@ -187,16 +206,19 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// Since CollectionViewModelBase is a POCO view model, this method will be used as a CanExecute callback for DeleteCommand.
         /// </summary>
         /// <param name="projectionEntity">An entity to edit.</param>
-        public virtual bool CanDelete(TProjection projectionEntity) {
+        public virtual bool CanDelete(TProjection projectionEntity)
+        {
             return projectionEntity != null && !IsLoading;
         }
 
-        protected override Func<TProjection> GetSelectedEntityCallback() {
+        protected override Func<TProjection> GetSelectedEntityCallback()
+        {
             var entity = SelectedEntity;
             return () => FindLocalProjectionWithSameKey(entity);
         }
 
-        TProjection FindLocalProjectionWithSameKey(TProjection projectionEntity) {
+        private TProjection FindLocalProjectionWithSameKey(TProjection projectionEntity)
+        {
             bool primaryKeyAvailable = projectionEntity != null && Repository.ProjectionHasPrimaryKey(projectionEntity);
             return primaryKeyAvailable ? ChangeTrackerWithKey.FindLocalProjectionByKey(Repository.GetProjectionPrimaryKey(projectionEntity)) : null;
         }
@@ -207,19 +229,24 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// </summary>
         /// <param name="entity">Entity to update and save.</param>
         [Display(AutoGenerateField = false)]
-        public virtual void Save(TEntity entity) {
-            try {
+        public virtual void Save(TEntity entity)
+        {
+            try
+            {
                 OnBeforeEntitySaved(Repository.GetPrimaryKey(entity), entity);
                 Repository.UnitOfWork.SaveChanges();
                 OnEntitySaved(Repository.GetPrimaryKey(entity), entity);
-            } catch (DbException e) {
+            }
+            catch (DbException e)
+            {
                 MessageBoxService.ShowMessage(e.ErrorMessage, e.ErrorCaption, MessageButton.OK, MessageIcon.Error);
             }
         }
 
         protected virtual void OnBeforeEntitySaved(TPrimaryKey primaryKey, TEntity entity) { }
 
-        protected virtual void OnEntitySaved(TPrimaryKey primaryKey, TEntity entity) {
+        protected virtual void OnEntitySaved(TPrimaryKey primaryKey, TEntity entity)
+        {
             Messenger.Default.Send(new EntityMessage<TEntity, TPrimaryKey>(primaryKey, EntityMessageType.Changed));
         }
 
@@ -228,7 +255,8 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// Since CollectionViewModelBase is a POCO view model, this method will be used as a CanExecute callback for SaveCommand.
         /// </summary>
         /// <param name="entity">Entity to edit.</param>
-        public virtual bool CanSave(TEntity entity) {
+        public virtual bool CanSave(TEntity entity)
+        {
             return entity != null && !IsLoading;
         }
 
@@ -237,35 +265,41 @@ namespace PersonalOrganizer.Common.ViewModel {
         /// Since CollectionViewModelBase is a POCO view model, an instance of this class will also expose the UpdateSelectedEntityCommand property that can be used as a binding source in views.
         /// </summary>
         [Display(AutoGenerateField = false)]
-        public virtual void UpdateSelectedEntity() {
+        public virtual void UpdateSelectedEntity()
+        {
             this.RaisePropertyChanged(x => x.SelectedEntity);
         }
 
         [Display(AutoGenerateField = false)]
-        public void Close() {
-            if(DocumentOwner != null)
+        public void Close()
+        {
+            if (DocumentOwner != null)
                 DocumentOwner.Close(this);
         }
 
-        protected override void OnSelectedEntityChanged() {
+        protected override void OnSelectedEntityChanged()
+        {
             base.OnSelectedEntityChanged();
             UpdateCommands();
         }
 
-        protected override void RestoreSelectedEntity(TProjection existingProjectionEntity, TProjection newProjectionEntity) {
+        protected override void RestoreSelectedEntity(TProjection existingProjectionEntity, TProjection newProjectionEntity)
+        {
             base.RestoreSelectedEntity(existingProjectionEntity, newProjectionEntity);
-            if(ReferenceEquals(SelectedEntity, existingProjectionEntity))
+            if (ReferenceEquals(SelectedEntity, existingProjectionEntity))
                 SelectedEntity = newProjectionEntity;
         }
 
-        protected override void OnIsLoadingChanged() {
+        protected override void OnIsLoadingChanged()
+        {
             base.OnIsLoadingChanged();
             UpdateCommands();
-            if(!IsLoading)
+            if (!IsLoading)
                 RequestSelectedEntity();
         }
 
-        void UpdateCommands() {
+        private void UpdateCommands()
+        {
             TProjection projectionEntity = null;
             this.RaiseCanExecuteChanged(x => x.Edit(projectionEntity));
             this.RaiseCanExecuteChanged(x => x.Delete(projectionEntity));
@@ -273,85 +307,107 @@ namespace PersonalOrganizer.Common.ViewModel {
             this.RaiseCanExecuteChanged(x => x.Save(entity));
         }
 
-        protected void DestroyDocument(IDocument document) {
-            if(document != null)
+        protected void DestroyDocument(IDocument document)
+        {
+            if (document != null)
                 document.Close();
         }
 
-        protected IRepository<TEntity, TPrimaryKey> CreateRepository() {
+        protected IRepository<TEntity, TPrimaryKey> CreateRepository()
+        {
             return (IRepository<TEntity, TPrimaryKey>)CreateReadOnlyRepository();
         }
 
-        protected override IEntitiesChangeTracker CreateEntitiesChangeTracker() {
+        protected override IEntitiesChangeTracker CreateEntitiesChangeTracker()
+        {
             return new EntitiesChangeTracker<TPrimaryKey>(this);
         }
 
-        void VerifyProjectionType() {
+        private void VerifyProjectionType()
+        {
             string primaryKeyPropertyName = CreateRepository().GetPrimaryKeyPropertyName();
-            if(TypeDescriptor.GetProperties(typeof(TProjection))[primaryKeyPropertyName] == null)
+            if (TypeDescriptor.GetProperties(typeof(TProjection))[primaryKeyPropertyName] == null)
                 throw new ArgumentException(string.Format("Projection type {0} should have primary key property {1}", typeof(TProjection).Name, primaryKeyPropertyName), "TProjection");
         }
 
         #region SelectEntityMessage
-        protected class SelectEntityMessage {
-            public SelectEntityMessage(TPrimaryKey primaryKey) {
+
+        protected class SelectEntityMessage
+        {
+            public SelectEntityMessage(TPrimaryKey primaryKey)
+            {
                 PrimaryKey = primaryKey;
             }
+
             public TPrimaryKey PrimaryKey { get; private set; }
         }
+
         protected class SelectedEntityRequest { }
 
-        readonly bool ignoreSelectEntityMessage;
+        private readonly bool ignoreSelectEntityMessage;
 
-        void RegisterSelectEntityMessage() {
-            if(!ignoreSelectEntityMessage)
+        private void RegisterSelectEntityMessage()
+        {
+            if (!ignoreSelectEntityMessage)
                 Messenger.Default.Register<SelectEntityMessage>(this, x => OnSelectEntityMessage(x));
         }
-        void RequestSelectedEntity() {
-            if(!ignoreSelectEntityMessage)
+
+        private void RequestSelectedEntity()
+        {
+            if (!ignoreSelectEntityMessage)
                 Messenger.Default.Send(new SelectedEntityRequest());
         }
-        void OnSelectEntityMessage(SelectEntityMessage message) {
-            if(!IsLoaded)
+
+        private void OnSelectEntityMessage(SelectEntityMessage message)
+        {
+            if (!IsLoaded)
                 return;
             var projectionEntity = ChangeTrackerWithKey.FindActualProjectionByKey(message.PrimaryKey);
-            if(projectionEntity == null) {
+            if (projectionEntity == null)
+            {
                 FilterExpression = null;
                 projectionEntity = ChangeTrackerWithKey.FindActualProjectionByKey(message.PrimaryKey);
             }
             SelectedEntity = projectionEntity;
         }
+
         #endregion
     }
 
-    public static class DocumentManagerServiceExtensions {
-        public static void ShowExistingEntityDocument<TEntity, TPrimaryKey>(this IDocumentManagerService documentManagerService, object parentViewModel, TPrimaryKey key) {
+    public static class DocumentManagerServiceExtensions
+    {
+        public static void ShowExistingEntityDocument<TEntity, TPrimaryKey>(this IDocumentManagerService documentManagerService, object parentViewModel, TPrimaryKey key)
+        {
             IDocument document = FindEntityDocument<TEntity, TPrimaryKey>(documentManagerService, key) ?? CreateDocument<TEntity>(documentManagerService, key, parentViewModel);
-            if(document != null)
+            if (document != null)
                 document.Show();
         }
 
-        public static void ShowNewEntityDocument<TEntity>(this IDocumentManagerService documentManagerService, object parentViewModel, Action<TEntity> newEntityInitializer = null) {
-            IDocument document = CreateDocument<TEntity>(documentManagerService, newEntityInitializer != null ? newEntityInitializer : x => DefaultEntityInitializer(x), parentViewModel);
-            if(document != null)
+        public static void ShowNewEntityDocument<TEntity>(this IDocumentManagerService documentManagerService, object parentViewModel, Action<TEntity> newEntityInitializer = null)
+        {
+            IDocument document = CreateDocument<TEntity>(documentManagerService, newEntityInitializer ?? (x => DefaultEntityInitializer(x)), parentViewModel);
+            if (document != null)
                 document.Show();
         }
 
-        public static IDocument FindEntityDocument<TEntity, TPrimaryKey>(this IDocumentManagerService documentManagerService, TPrimaryKey key) {
-            if(documentManagerService == null)
+        public static IDocument FindEntityDocument<TEntity, TPrimaryKey>(this IDocumentManagerService documentManagerService, TPrimaryKey key)
+        {
+            if (documentManagerService == null)
                 return null;
-            foreach(IDocument document in documentManagerService.Documents) {
-                ISingleObjectViewModel<TEntity, TPrimaryKey> entityViewModel = document.Content as ISingleObjectViewModel<TEntity, TPrimaryKey>;
-                if(entityViewModel != null && object.Equals(entityViewModel.PrimaryKey, key))
+            foreach (IDocument document in documentManagerService.Documents)
+            {
+                if (document.Content is ISingleObjectViewModel<TEntity, TPrimaryKey> entityViewModel && object.Equals(entityViewModel.PrimaryKey, key))
                     return document;
             }
             return null;
         }
 
-        static void DefaultEntityInitializer<TEntity>(TEntity entity) { }
+        private static void DefaultEntityInitializer<TEntity>(TEntity entity)
+        { }
 
-        static IDocument CreateDocument<TEntity>(IDocumentManagerService documentManagerService, object parameter, object parentViewModel) {
-            if(documentManagerService == null)
+        private static IDocument CreateDocument<TEntity>(IDocumentManagerService documentManagerService, object parameter, object parentViewModel)
+        {
+            if (documentManagerService == null)
                 return null;
             return documentManagerService.CreateDocument(typeof(TEntity).Name + "View", parameter, parentViewModel);
         }
